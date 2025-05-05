@@ -16,8 +16,9 @@
                 <p:commandButton value="#{msgs['producto.boton.crear']}" action="productoForm.xhtml"
                                  class="p-my-2"/>
             </h:form>
-            <h:outputText value="#{msgs['texto.noHayRegistros']}" rendered="#{empty listadoProductos}" class="alert alert-warning"/>
-            <p:dataTable value="#{listadoProductos}" var="prod" rendered="#{not empty listadoProductos}" >
+            <h:outputText value="#{msgs['texto.noHayRegistros']}" rendered="#{empty productoController.listado}" class="alert alert-warning"/>
+            <p:dataTable id="tabla" value="#{productoController.listado}" var="prod"
+                         rendered="#{not empty productoController.listado}" >
                 <p:column headerText="#{msgs['producto.id']}">
                     <h:outputText value="#{prod.id}"/>
                 </p:column>
@@ -54,7 +55,8 @@
                     <h:form id="eliminarProducto">
                         <p:commandButton value="#{msgs['producto.boton.eliminar']}" action="#{productoController.eliminar(prod)}"
                                        class="ui-button-danger"
-                                       onclick="return confirm('¿Está seguro que desea eliminar?')"/>
+                                       onclick="return confirm('¿Está seguro que desea eliminar?')"
+                                       update="tabla"/>
                     </h:form>
                 </p:column>
             </p:dataTable>

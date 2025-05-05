@@ -1,5 +1,6 @@
 package org.ngarcia.webapp.jsf3.controllers;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.*;
 import jakarta.enterprise.inject.*;
 import jakarta.faces.application.FacesMessage;
@@ -22,6 +23,8 @@ public class ProductoController {
 
    private Long id;
 
+   private List<Producto> listado;
+
    @Inject
    private ProductoService service;
 
@@ -31,6 +34,11 @@ public class ProductoController {
    @Inject
    private ResourceBundle bundle;
 
+   @PostConstruct
+   public void init() {
+      this.listado = service.listar();
+   }
+
    @Produces
    @Model
    public String titulo() {
@@ -38,6 +46,7 @@ public class ProductoController {
       return bundle.getString("producto.index.titulo");
    }
 
+   /*
    @Produces
    @RequestScoped
    @Named("listadoProductos")
@@ -47,6 +56,7 @@ public class ProductoController {
       //        new Producto("mandarinas"));
       return service.listar();
    }
+   */
 
    @Produces
    @Model
@@ -99,7 +109,8 @@ public class ProductoController {
       return "productoForm.xhtml";
    }
 
-   public String eliminar(Producto producto) {
+   //public String eliminar(Producto producto) {
+   public void eliminar(Producto producto) {
 
       service.eliminar(producto.getId());
 
@@ -107,7 +118,11 @@ public class ProductoController {
       facesContext.addMessage(null,new FacesMessage(
               bundle.getString("producto.mensaje.eliminar"),producto.getNombre()));
 
-      return "index.xhtml?faces-redirect=true";
+      this.listado = service.listar();
+
+      //return "index.xhtml?faces-redirect=true";
+      //cuando emprezamos a utilizar la validación con ajax lo cambiamos
+      //return "index.xhtml";
    }
 
    public Long getId() {
@@ -116,5 +131,13 @@ public class ProductoController {
 
    public void setId(Long id) {
       this.id = id;
+   }
+
+   public List<Producto> getListado() {
+      return listado;
+   }
+
+   public void setListado(List<Producto> listado) {
+      this.listado = listado;
    }
 }
