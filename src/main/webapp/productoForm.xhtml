@@ -77,12 +77,16 @@
                     </div>
                 </div>
 
+                <!-- value="#{producto.id>0 ? msgs['producto.boton.editar'] : msgs['producto.boton.crear']}" -->
                 <div class="p-field p-grid">
                     <!-- para hacer la validación normalita con el post al controlador con ajax="false" -->
+
                     <p:commandButton
-                            value="#{producto.id > 0 ? msgs['producto.boton.editar'] : msgs['producto.boton.crear']}"
+                            value="#{productoController.descButton}"
                             action="#{productoController.guardar}"
-                            class="ui-button-outlined ui-button-success" update="@form" />
+                            class="ui-button-outlined ui-button-success" update="@form" >
+                        <f:param name="id" value="#{param.id}" />
+                    </p:commandButton>
                 </div>
                 <h:inputHidden value="#{producto.id}"/>
 

@@ -12,6 +12,7 @@ import org.ngarcia.webapp.jsf3.entities.Producto;
 import org.ngarcia.webapp.jsf3.services.ProductoService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 //@Named
@@ -97,6 +98,8 @@ public class ProductoController {
 
       service.guardar(this.producto);
 
+      this.listado = service.listar();
+
       //el redirect es importante para evitar que se ejecute más de una vez (creo)
       //return "index.xhtml?faces-redirect=true";
       //cuando emprezamos a utilizar la validación con ajax lo cambiamos
@@ -139,5 +142,29 @@ public class ProductoController {
 
    public void setListado(List<Producto> listado) {
       this.listado = listado;
+   }
+
+   public String getDescButton() {
+
+      String idParam = "";
+
+      if(this.id != null) { //lo utiliza el primer botón de Editar (se pierde si hay error de validación)
+         idParam = this.id.toString();
+      }
+      else { //lo utiliza el segundo botón de Editar
+         FacesContext facesContext = FacesContext.getCurrentInstance();
+         Map<String, String> params = facesContext.getExternalContext()
+                 .getRequestParameterMap();
+         idParam = params.get("id");
+      }
+
+      System.out.println("ID:"+idParam);
+
+      if (idParam != null && !idParam.isEmpty()) {
+         return bundle.getString("producto.boton.editar");
+      }
+      else {
+         return bundle.getString("producto.boton.crear");
+      }
    }
 }
