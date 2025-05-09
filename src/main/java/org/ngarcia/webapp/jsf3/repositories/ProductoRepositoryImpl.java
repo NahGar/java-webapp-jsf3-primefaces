@@ -8,7 +8,8 @@ import org.ngarcia.webapp.jsf3.entities.Producto;
 import java.util.List;
 
 @RequestScoped
-public class ProductoRepositoryImpl implements CrudRepository<Producto> {
+//public class ProductoRepositoryImpl implements CrudRepository<Producto> {
+public class ProductoRepositoryImpl implements ProductoRepository {
 
    @Inject
    private EntityManager em;
@@ -40,5 +41,11 @@ public class ProductoRepositoryImpl implements CrudRepository<Producto> {
    @Override
    public void eliminar(Long id) {
       em.remove(porId(id));
+   }
+
+   @Override
+   public List<Producto> buscarPorNombre(String nombre) {
+      String sql = "select p from Producto p left outer join fetch p.categoria where p.nombre like :nombre";
+      return em.createQuery(sql,Producto.class).setParameter("nombre","%"+nombre+"%").getResultList();
    }
 }

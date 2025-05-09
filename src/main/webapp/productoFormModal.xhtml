@@ -1,0 +1,83 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:h="http://xmlns.jcp.org/jsf/html"
+              xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+              xmlns:f="http://xmlns.jcp.org/jsf/core"
+              xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formProducto">
+        <div class="p-field p-grid">
+            <p:outputLabel value="#{msgs['producto.nombre']}" for="nombre" class="p-col-fixed" style="width: 200px"/>
+            <div class="p-column">
+                <p:inputText id="nombre" value="#{productoControllerModal.producto.nombre}" label="Nombre" />
+            </div>
+            <div class="p-column">
+                <p:message for="nombre" style="color:red"/>
+            </div>
+        </div>
+
+        <div class="p-field p-grid">
+            <p:outputLabel value="#{msgs['producto.categoria']}" for="categoria" class="p-col-fixed" style="width: 200px"/>
+            <div class="p-column">
+                <p:selectOneMenu id="categoria" value="#{productoControllerModal.producto.categoria}" >
+                    <f:selectItem itemLabel="--- seleccione categoría ---" itemValue="#{null}"/>
+                    <!-- Al poner converter hay que quitar itemValue
+                    <f:selectItems value="#{listadoCategorias}" var="c" itemLabel="#{c.nombre}" itemValue="#{c.id}" />
+                    -->
+                    <f:selectItems value="#{listadoCategorias}" var="c" itemLabel="#{c.nombre}"/>
+                    <f:converter binding="#{categoriaConverter}"/>
+                </p:selectOneMenu>
+            </div>
+            <div class="p-column">
+                <p:message for="categoria" style="color:red"/>
+            </div>
+        </div>
+
+        <div class="p-field p-grid">
+            <p:outputLabel value="#{msgs['producto.precio']}" for="precio" class="p-col-fixed" style="width: 200px"/>
+            <div class="p-column">
+                <p:inputText id="precio" value="#{productoControllerModal.producto.precio}" label="Precio" />
+            </div>
+            <div class="p-column">
+                <p:message for="precio" style="color:red"/>
+            </div>
+        </div>
+
+        <div class="p-field p-grid">
+            <p:outputLabel value="#{msgs['producto.sku']}" for="sku" class="p-col-fixed" style="width: 200px"/>
+            <div class="p-column">
+                <p:inputText id="sku" value="#{productoControllerModal.producto.sku}" label="Sku" />
+            </div>
+            <div class="p-column">
+                <p:message for="sku" style="color:red"/>
+            </div>
+        </div>
+
+        <div class="p-field p-grid">
+            <p:outputLabel value="#{msgs['producto.fechaRegistro']}" for="fechaRegistro" class="p-col-fixed" style="width: 200px"/>
+            <div class="p-column">
+                <p:datePicker pattern="yyyy-MM-dd" id="fechaRegistro" value="#{productoControllerModal.producto.fechaRegistro}"
+                             label="Fecha registro" converterMessage="Indique la fecha con formato yyyyy-MM-dd">
+                    <f:convertDateTime type="localDate" pattern="yyyy-MM-dd"/>
+                    <f:passThroughAttribute name="type" value="date"/>
+                </p:datePicker>
+            </div>
+            <div class="p-column">
+                <p:message for="fechaRegistro" style="color:red"/>
+            </div>
+        </div>
+
+        <div class="p-field p-grid">
+            <!-- para hacer la validación normalita con el post al controlador con ajax="false" -->
+
+            <p:commandButton
+                    value="#{productoControllerModal.descButton}"
+                    action="#{productoControllerModal.guardar}"
+                    class="ui-button-outlined ui-button-success" update="@form tabla" >
+                <f:param name="id" value="#{param.id}" />
+            </p:commandButton>
+        </div>
+        <h:inputHidden value="#{productoControllerModal.producto.id}"/>
+
+        <!-- los campos que no se modifican van hidden -->
+    </h:form>
+</ui:component>

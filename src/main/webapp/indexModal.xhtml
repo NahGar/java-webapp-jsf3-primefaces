@@ -3,7 +3,7 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
-                template="/WEB-INF/layouts/main.xhtml">
+                template="/WEB-INF/layouts/mainModal.xhtml">
 
     <ui:define name="content">
         <p:card>
@@ -13,25 +13,27 @@
 
             <p:divider/>
             <h:form id="crearProducto">
-                <p:commandButton value="#{msgs['producto.boton.crear']}" action="productoForm.xhtml"
-                                 class="p-my-2"/>
+                <p:commandButton value="#{msgs['producto.boton.crear']}"
+                                 class="p-my-2" onclick="PF('dialogProducto').show()" icon="pi pi-plus-circle">
+                    <p:resetInput target="formProducto" />
+                </p:commandButton>
             </h:form>
-            <h:outputText value="#{msgs['texto.noHayRegistros']}" rendered="#{empty productoController.listado}" class="alert alert-warning"/>
+            <h:outputText value="#{msgs['texto.noHayRegistros']}" rendered="#{empty productoControllerModal.listado}" class="alert alert-warning"/>
 
             <h:form>
                 <div class="p-field p-grid p-my-2">
                     <label for="textoBuscar" class="p-col-fixed" style="width: 100px">Buscar</label>
                     <div class="p-col">
-                        <p:inputText id="textoBuscar" value="#{productoController.textoBuscar}" placeholder="Buscar nombre">
-                            <p:ajax listener="#{productoController.buscar}" event="keyup" update="mostrar tabla" />
+                        <p:inputText id="textoBuscar" value="#{productoControllerModal.textoBuscar}" placeholder="Buscar nombre">
+                            <p:ajax listener="#{productoControllerModal.buscar}" event="keyup" update="mostrar tabla" />
                         </p:inputText>
                     </div>
-                    <div class="p-col"><h:outputText id="mostrar" value="#{productoController.textoBuscar}" /></div>
+                    <div class="p-col"><h:outputText id="mostrar" value="#{productoControllerModal.textoBuscar}" /></div>
                 </div>
             </h:form>
 
-            <p:dataTable id="tabla" value="#{productoController.listado}" var="prod"
-                rendered="#{not empty productoController.listado}" rows="5" paginator="true" paginatorPosition="bottom"
+            <p:dataTable id="tabla" value="#{productoControllerModal.listado}" var="prod"
+                rendered="#{not empty productoControllerModal.listado}" rows="5" paginator="true" paginatorPosition="bottom"
                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                 currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} #{msgs['texto.registros']}"
                 rowsPerPageTemplate="5,10,20,50,{ShowAll|'#{msgs['texto.todos']}'}">
@@ -58,25 +60,29 @@
                 </p:column>
                 <p:column headerText="">
                     <h:form id="editarProducto">
-                        <p:commandButton value="#{msgs['producto.boton.editar']}" action="#{productoController.editar(prod.id)}"
-                                       class="ui-button-success"/>
+                        <p:commandButton value="#{msgs['producto.boton.editar']}" action="#{productoControllerModal.editar(prod.id)}"
+                               class="ui-button-success" onclick="PF('dialogProducto').show()" icon="pi pi-save"
+                               update="formProducto" >
+                            <p:resetInput target="formProducto" />
+                        </p:commandButton>
                     </h:form>
-                </p:column>
-                <p:column headerText="">
-                    <p:linkButton value="#{msgs['producto.boton.editar']}" outcome="productoForm"
-                                  class="ui-button-info">
-                        <f:param name="id" value="#{prod.id}"/>
-                    </p:linkButton>
                 </p:column>
                 <p:column headerText="">
                     <h:form id="eliminarProducto">
-                        <p:commandButton value="#{msgs['producto.boton.eliminar']}" action="#{productoController.eliminar(prod)}"
-                                       class="ui-button-danger"
-                                       onclick="return confirm('¿Está seguro que desea eliminar?')"
-                                       update="tabla"/>
+                        <p:commandButton value="#{msgs['producto.boton.eliminar']}" action="#{productoControllerModal.eliminar(prod)}"
+                               class="ui-button-danger" icon="pi pi-trash"
+                               onclick="return confirm('¿Está seguro que desea eliminar?')"
+                               update="tabla"/>
                     </h:form>
                 </p:column>
             </p:dataTable>
+
+            <p:dialog header="#{productoControllerModal.producto.id>0 ? msgs['producto.boton.editar']: msgs['producto.boton.crear']} #{msgs['producto']}"
+                      widgetVar="dialogProducto" minHeight="200" minWidth="500"
+                      showEffect="fade" modal="true">
+                <p:ajax event="close" listener="#{productoControllerModal.cerrarDialogo}" update="formProducto" />
+                <ui:include src="productoFormModal.xhtml" />
+            </p:dialog>
         </p:card>
     </ui:define>
 </ui:composition>

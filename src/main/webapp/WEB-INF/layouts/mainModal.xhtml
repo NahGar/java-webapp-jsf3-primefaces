@@ -19,7 +19,7 @@
                 <h:form>
                     <p:menubar>
                         <p:menuitem value="#{msgs['menubar.texto.inicio']}" outcome="index" icon="pi pi-fw pi-home" />
-                        <p:menuitem value="#{msgs['menubar.texto.crear']}" outcome="productoForm" icon="pi pi-fw pi-plus" />
+                        <p:menuitem value="#{msgs['menubar.texto.crear']}" onclick="PF('dialogProducto').show()" icon="pi pi-fw pi-plus" />
                         <p:menuitem icon="pi pi-fw pi-flag" >
                             <p:selectOneMenu value="#{lenguajeController.lenguaje}"
                                              valueChangeListener="#{lenguajeController.seleccionar}" onchange="submit()" >
@@ -32,13 +32,15 @@
                 </h:form>
 
                 <div class="p-mb-2">
-                    <p:messages globalOnly="true" closable="true" />
+                    <p:messages globalOnly="true" closable="true" >
+                        <p:autoUpdate />
+                    </p:messages>
                     <ui:insert name="content" />
                 </div>
                 <p:divider/>
                 <div class="p-mb-2">
                     <footer style="clear: both;" >
-                        <h:graphicImage value="/resources/img/Jakarta.png" alt="logo jakarta" style="width: 200px" />
+                        <h:graphicImage value="/resources/img/Jakarta.png" alt="logo jakarta" style="width: 200px"/>
                         <p><h:outputText value="#{msgs['footer.texto.autor']}"/></p>
                         <ui:insert name="js" />
                     </footer>

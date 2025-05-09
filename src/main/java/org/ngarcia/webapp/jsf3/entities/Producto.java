@@ -105,4 +105,12 @@ public class Producto {
               ", fechaRegistro=" + fechaRegistro +
               '}';
    }
+
+   public boolean isEmpty() {
+      return (nombre == null || nombre.isEmpty()) &&   // String @NotEmpty
+              precio == null &&                         // Integer @NotNull
+              (sku == null || sku.isEmpty()) &&         // String @NotEmpty
+              fechaRegistro == null &&                  // LocalDate @NotNull
+              categoria == null;                        // Categoria @NotNull
+   }
 }

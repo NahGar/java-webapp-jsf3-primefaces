@@ -1,13 +1,11 @@
 package org.ngarcia.webapp.jsf3.controllers;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.*;
-import jakarta.enterprise.inject.*;
+import jakarta.enterprise.inject.Model;
+import jakarta.enterprise.inject.Produces;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import org.ngarcia.webapp.jsf3.entities.Categoria;
 import org.ngarcia.webapp.jsf3.entities.Producto;
 import org.ngarcia.webapp.jsf3.services.ProductoService;
 
@@ -16,7 +14,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 @Model //Model equivale a Named + RequestScoped
-public class ProductoController {
+public class ProductoControllerModal {
 
    private Producto producto;
 
@@ -38,6 +36,7 @@ public class ProductoController {
    @PostConstruct
    public void init() {
       this.listado = service.listar();
+      producto = new Producto();
    }
 
    public Long getId() {
@@ -64,37 +63,50 @@ public class ProductoController {
       this.textoBuscar = textoBuscar;
    }
 
+   public Producto getProducto() {
+      return producto;
+   }
+
+   public void setProducto(Producto producto) {
+      this.producto = producto;
+   }
+
+   /* Se repite
    @Produces
    @Model
    public String titulo() {
       //return "Hola mundo JavaServer Faces 3.0 desde controller";
       return bundle.getString("producto.index.titulo");
    }
+   */
 
-   @Produces
-   @Model
+   //@Produces
+   //@Model
    public Producto producto() {
-      //this.producto = new Producto();
-      if (this.producto == null) {
+
+      //if (this.producto == null) {
+      if (this.producto.isEmpty()) {
          this.producto = new Producto();
          if (this.id != null && this.id > 0) {
             service.porId(id).ifPresent(p -> this.producto = p);
          }
       }
-      System.out.println("PRODUCTO COMUN:" + producto);
+      System.out.println("producto modal: " + producto);
       return this.producto;
    }
 
+   /* Se repite
    @Produces
    @RequestScoped
    @Named("listadoCategorias")
    public List<Categoria> findAllCategorias() {
       return service.listarCategorias();
    }
+   */
 
-   public String guardar() {
+   public void guardar() {
 
-      System.out.println("GUARDAR: "+this.producto);
+      System.out.println("GUARDAR MODAL: "+this.producto);
 
       System.out.println(this.producto);
       if(this.producto.getId() != null && this.producto.getId() > 0) {
@@ -110,16 +122,13 @@ public class ProductoController {
 
       this.listado = service.listar();
 
-      //el redirect es importante para evitar que se ejecute más de una vez (creo)
-      //return "index.xhtml?faces-redirect=true";
-      //cuando emprezamos a utilizar la validación con ajax lo cambiamos
-      return "index.xhtml";
+      producto = new Producto();
    }
 
-   public String editar(Long id) {
+   public void editar(Long id) {
+      System.out.println("EDITAR MODAL:"+id);
       this.id = id;
-      // Quita el faces-redirect para mantener el ID durante validaciones
-      return "productoForm.xhtml";
+      producto();
    }
 
    //public String eliminar(Producto producto) {
@@ -131,14 +140,14 @@ public class ProductoController {
               bundle.getString("producto.mensaje.eliminar"),producto.getNombre()));
 
       this.listado = service.listar();
-
-      //return "index.xhtml?faces-redirect=true";
-      //cuando emprezamos a utilizar la validación con ajax lo cambiamos
-      //return "index.xhtml";
    }
 
    public void buscar() {
       this.listado = service.buscarPorNombre(this.textoBuscar);
+   }
+
+   public void cerrarDialogo() {
+      producto = new Producto();
    }
 
    public String getDescButton() {
@@ -155,7 +164,7 @@ public class ProductoController {
          idParam = params.get("id");
       }
 
-      System.out.println("ID:"+idParam);
+      //System.out.println("ID:"+idParam);
 
       if (idParam != null && !idParam.isEmpty()) {
          return bundle.getString("producto.boton.editar");
